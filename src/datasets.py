@@ -1,8 +1,6 @@
 import os
 import json
-import cv2
 import kagglehub
-from kagglehub import KaggleDatasetAdapter
 
 DATASET_HANDLE = "manideep1108/tusimple"
 LABEL_FILE = "test_label_new.json"
@@ -34,7 +32,7 @@ def find_image_path(root, raw_file):
     return None
 
 
-def setPoints(rec):
+def get_lane_points(rec):
     lanes = rec.get("lanes", [])
     h_samples = rec.get("h_samples", [])
     if not lanes or not h_samples: 

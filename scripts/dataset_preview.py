@@ -1,50 +1,17 @@
 import os
-import json
 import cv2
 import matplotlib.pyplot as plt
-from src.datasets import get_dataset_root
+from src.datasets import (get_dataset_root, iter_records, find_image_path, get_lane_points)
 
 LABEL_FILE = "test_label_new.json"
 
-def iter_records(label_path):
-    with open(label_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            yield json.loads(line)
+def overlay_points(ax, lane_points, *, s=5):
 
-def find_image_path(root, raw_file):
-    candidates = [
-        root,
-        os.path.join(root, "TUSimple"),
-        os.path.join(root, "TUSimple", "train_set"),
-        os.path.join(root, "TUSimple", "test_set"),
-    ]
-
-    for base in candidates:
-        p = os.path.join(base, raw_file)
-        if os.path.exists(p):
-            return p
-    return None
-
-
-
-def overlay_gt_points(ax, rec, *, s=5):
-    lanes = rec.get("lanes", [])
-    h_samples = rec.get("h_samples", [])
-    if not lanes or not h_samples: 
-        return
-    
-    laneY = h_samples
-
-    for laneX in lanes:
-        for x, y in zip(laneX, laneY):
-            if x<0 or x is None:
-                continue
-
-            ax.scatter(x, y, s=s, c="red", marker="o")
-
+    for lane in lane_points:
+        xs = [p[0] for p in lane]
+        ys = [p[1] for p in lane]
+        ax.scatter(xs, ys, s=s, c="red", marker="o")
+        # ax.plot(xs, ys, linewidth=2)
 
 
 def main():
@@ -61,15 +28,21 @@ def main():
             continue
 
         img = cv2.imread(img_path)
+        if img is None:
+            continue
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        plt.figure(figsize=(10, 6))
-        plt.imshow(img, alpha=0.7)
-        overlay_gt_points(plt, rec, s=5)
-        plt.show()
+        lane_points = get_lane_points(rec)
+        if not lane_points:
+            continue
 
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.imshow(img, alpha=0.85)
+        overlay_points(ax, lane_points, s=5)
+        ax.axis("off")
+        plt.show()
         return
-        
+
 
 if __name__ == "__main__":
     main()
