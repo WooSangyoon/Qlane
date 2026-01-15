@@ -1,5 +1,4 @@
 # Qlane
----
 ## Overview
 
 This project explores hybrid classical–quantum modeling for structured lane detection.
