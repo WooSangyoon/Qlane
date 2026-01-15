@@ -3,7 +3,6 @@ import json
 import kagglehub
 
 DATASET_HANDLE = "manideep1108/tusimple"
-LABEL_FILE = "test_label_new.json"
 
 def get_dataset_root():
     dataset_dir = kagglehub.dataset_download(DATASET_HANDLE)
@@ -36,7 +35,7 @@ def get_lane_points(rec):
     lanes = rec.get("lanes", [])
     h_samples = rec.get("h_samples", [])
     if not lanes or not h_samples: 
-        return
+        return []
     
     laneY = h_samples
 
