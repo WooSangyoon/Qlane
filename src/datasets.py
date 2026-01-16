@@ -1,8 +1,7 @@
 import os
 import json
 import kagglehub
-
-DATASET_HANDLE = "manideep1108/tusimple"
+from src.constants import DATASET_HANDLE
 
 def get_dataset_root():
     dataset_dir = kagglehub.dataset_download(DATASET_HANDLE)

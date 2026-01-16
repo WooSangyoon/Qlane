@@ -2,8 +2,7 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 from src.datasets import (get_dataset_root, iter_records, find_image_path, get_lane_points)
-
-LABEL_FILE = "test_label_new.json"
+from src.constants import LABEL_FILE
 
 def overlay_points(ax, lane_points, *, s=5):
 
